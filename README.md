@@ -82,6 +82,14 @@ directly. The browser code in `client/` has to be compiled to
 run `npm run build` to do just that step). To check the server code for type
 errors, run `npm run typecheck`.
 
+To run the API tests, run `npm test`. They use Node's built-in test runner
+against a temporary in-memory database, so they never touch your `todos.db`.
+
+To run the browser tests, run `npm run test:e2e`. They use
+[Playwright](https://playwright.dev) to drive Chromium against a separate
+server on port 3100, also with an in-memory database. The first time, install
+the browser with `npx playwright install chromium`.
+
 Your tasks are stored in a `todos.db` file created in this folder the first
 time you run the app.
 

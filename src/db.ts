@@ -8,8 +8,10 @@ export interface TaskRow {
   created_at: string;
 }
 
-// The database file lives in the project root, one level above src/.
-const db = new DatabaseSync(path.join(import.meta.dirname, "..", "todos.db"));
+// By default the database file lives in the project root, one level above src/.
+// Set DB_PATH to override it (tests use ":memory:").
+const dbPath = process.env.DB_PATH || path.join(import.meta.dirname, "..", "todos.db");
+const db = new DatabaseSync(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS tasks (
