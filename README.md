@@ -6,14 +6,15 @@ restarts. Everything stays on your own machine — nothing is sent anywhere.
 
 ## Requirements
 
-- **Node.js 22.5 or newer** (needed for the built-in `node:sqlite` module — no
-  separate database software or C/C++ build tools required).
+- **Node.js 22.18 or newer** (needed for the built-in `node:sqlite` module and
+  for running TypeScript directly — no separate database software or C/C++
+  build tools required).
 
 ## Setup
 
 ### macOS
 
-1. Install Node.js 22.5+:
+1. Install Node.js 22.18+:
    - Easiest: install [Homebrew](https://brew.sh) if you don't have it, then run:
      ```
      brew install node
@@ -23,13 +24,13 @@ restarts. Everything stays on your own machine — nothing is sent anywhere.
    ```
    node -v
    ```
-   (should print `v22.5.0` or higher)
+   (should print `v22.18.0` or higher)
 3. Open Terminal, navigate into this project folder, then continue with
    [Run the app](#run-the-app) below.
 
 ### Windows
 
-1. Install Node.js 22.5+:
+1. Install Node.js 22.18+:
    - Download the Windows installer (`.msi`) from [nodejs.org](https://nodejs.org)
      and run it, accepting the defaults.
    - Or, if you use [winget](https://learn.microsoft.com/windows/package-manager/winget/):
@@ -41,13 +42,13 @@ restarts. Everything stays on your own machine — nothing is sent anywhere.
    ```
    node -v
    ```
-   (should print `v22.5.0` or higher)
+   (should print `v22.18.0` or higher)
 3. Navigate into this project folder, then continue with
    [Run the app](#run-the-app) below.
 
 ### Linux
 
-1. Install Node.js 22.5+. The version in your distro's package manager is
+1. Install Node.js 22.18+. The version in your distro's package manager is
    often older than required, so use [nvm](https://github.com/nvm-sh/nvm)
    or [NodeSource](https://github.com/nodesource/distributions) instead:
    - Using nvm:
@@ -60,7 +61,7 @@ restarts. Everything stays on your own machine — nothing is sent anywhere.
    ```
    node -v
    ```
-   (should print `v22.5.0` or higher)
+   (should print `v22.18.0` or higher)
 3. Navigate into this project folder, then continue with
    [Run the app](#run-the-app) below.
 
@@ -74,6 +75,12 @@ npm start
 ```
 
 Then open **http://localhost:3000** in your browser.
+
+The app is written in TypeScript. Node runs the server code in `src/`
+directly. The browser code in `client/` has to be compiled to
+`public/script.js`, which `npm start` does automatically before launching (or
+run `npm run build` to do just that step). To check the server code for type
+errors, run `npm run typecheck`.
 
 Your tasks are stored in a `todos.db` file created in this folder the first
 time you run the app.

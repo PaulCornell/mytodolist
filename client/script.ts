@@ -1,31 +1,39 @@
-const addForm = document.getElementById("add-form");
-const taskInput = document.getElementById("task-input");
-const taskList = document.getElementById("task-list");
-const itemCount = document.getElementById("item-count");
-const clearCompletedBtn = document.getElementById("clear-completed");
-const filterBtns = document.querySelectorAll(".filter-btn");
+interface Task {
+  id: number;
+  text: string;
+  completed: boolean;
+}
 
-let tasks = [];
-let currentFilter = "all";
+type Filter = "all" | "active" | "completed";
 
-async function fetchTasks() {
+const addForm = document.getElementById("add-form") as HTMLFormElement;
+const taskInput = document.getElementById("task-input") as HTMLInputElement;
+const taskList = document.getElementById("task-list") as HTMLUListElement;
+const itemCount = document.getElementById("item-count") as HTMLSpanElement;
+const clearCompletedBtn = document.getElementById("clear-completed") as HTMLButtonElement;
+const filterBtns = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+
+let tasks: Task[] = [];
+let currentFilter: Filter = "all";
+
+async function fetchTasks(): Promise<void> {
   const res = await fetch("/api/tasks");
   tasks = await res.json();
   render();
 }
 
-async function addTask(text) {
+async function addTask(text: string): Promise<void> {
   const res = await fetch("/api/tasks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   });
-  const task = await res.json();
+  const task: Task = await res.json();
   tasks.push(task);
   render();
 }
 
-async function toggleTask(id) {
+async function toggleTask(id: number): Promise<void> {
   const task = tasks.find((t) => t.id === id);
   if (!task) return;
   const res = await fetch(`/api/tasks/${id}`, {
@@ -33,30 +41,30 @@ async function toggleTask(id) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ completed: !task.completed }),
   });
-  const updated = await res.json();
+  const updated: Task = await res.json();
   Object.assign(task, updated);
   render();
 }
 
-async function deleteTask(id) {
+async function deleteTask(id: number): Promise<void> {
   await fetch(`/api/tasks/${id}`, { method: "DELETE" });
   tasks = tasks.filter((t) => t.id !== id);
   render();
 }
 
-async function clearCompleted() {
+async function clearCompleted(): Promise<void> {
   await fetch("/api/tasks/completed", { method: "DELETE" });
   tasks = tasks.filter((t) => !t.completed);
   render();
 }
 
-function getVisibleTasks() {
+function getVisibleTasks(): Task[] {
   if (currentFilter === "active") return tasks.filter((t) => !t.completed);
   if (currentFilter === "completed") return tasks.filter((t) => t.completed);
   return tasks;
 }
 
-function render() {
+function render(): void {
   const visible = getVisibleTasks();
   taskList.innerHTML = "";
 
@@ -75,7 +83,7 @@ function render() {
   itemCount.textContent = `${activeCount} item${activeCount === 1 ? "" : "s"} left`;
 }
 
-function renderTaskItem(task) {
+function renderTaskItem(task: Task): HTMLLIElement {
   const li = document.createElement("li");
   li.className = "task-item" + (task.completed ? " completed" : "");
 
@@ -113,7 +121,7 @@ filterBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     filterBtns.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
+    currentFilter = btn.dataset.filter as Filter;
     render();
   });
 });
