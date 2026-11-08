@@ -5,16 +5,19 @@ interface Task {
 }
 
 type Filter = "all" | "active" | "completed";
+type SortOrder = "oldest" | "newest" | "alpha";
 
 const addForm = document.getElementById("add-form") as HTMLFormElement;
 const taskInput = document.getElementById("task-input") as HTMLInputElement;
 const taskList = document.getElementById("task-list") as HTMLUListElement;
 const itemCount = document.getElementById("item-count") as HTMLSpanElement;
 const clearCompletedBtn = document.getElementById("clear-completed") as HTMLButtonElement;
+const sortSelect = document.getElementById("sort-order") as HTMLSelectElement;
 const filterBtns = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
 
 let tasks: Task[] = [];
 let currentFilter: Filter = "all";
+let currentSort: SortOrder = "oldest";
 
 async function fetchTasks(): Promise<void> {
   const res = await fetch("/api/tasks");
@@ -59,9 +62,18 @@ async function clearCompleted(): Promise<void> {
 }
 
 function getVisibleTasks(): Task[] {
-  if (currentFilter === "active") return tasks.filter((t) => !t.completed);
-  if (currentFilter === "completed") return tasks.filter((t) => t.completed);
-  return tasks;
+  let visible = tasks;
+  if (currentFilter === "active") visible = tasks.filter((t) => !t.completed);
+  if (currentFilter === "completed") visible = tasks.filter((t) => t.completed);
+  return sortTasks(visible);
+}
+
+function sortTasks(list: Task[]): Task[] {
+  const sorted = [...list];
+  if (currentSort === "newest") sorted.sort((a, b) => b.id - a.id);
+  else if (currentSort === "alpha") sorted.sort((a, b) => a.text.localeCompare(b.text));
+  else sorted.sort((a, b) => a.id - b.id);
+  return sorted;
 }
 
 function render(): void {
@@ -113,6 +125,11 @@ addForm.addEventListener("submit", (e) => {
   addTask(text);
   taskInput.value = "";
   taskInput.focus();
+});
+
+sortSelect.addEventListener("change", () => {
+  currentSort = sortSelect.value as SortOrder;
+  render();
 });
 
 clearCompletedBtn.addEventListener("click", clearCompleted);
