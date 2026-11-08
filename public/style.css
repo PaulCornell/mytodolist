@@ -184,3 +184,13 @@ footer {
 #clear-completed:hover {
   color: var(--danger);
 }
+
+.sort-control {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.sort-control select {
+  margin-left: 0.5rem;
+}
