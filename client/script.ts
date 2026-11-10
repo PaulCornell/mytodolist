@@ -108,6 +108,7 @@ function render(): void {
   itemCount.textContent =
     `${activeCount} item${activeCount === 1 ? "" : "s"} left` +
     (completedCount > 0 ? ` · ${completedCount} completed` : "");
+  clearCompletedBtn.disabled = completedCount === 0;
 }
 
 function renderTaskItem(task: Task): HTMLLIElement {
