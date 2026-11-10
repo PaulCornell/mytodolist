@@ -17,7 +17,19 @@ const filterBtns = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
 
 let tasks: Task[] = [];
 let currentFilter: Filter = "all";
-let currentSort: SortOrder = "oldest";
+const SORT_KEY = "mytodolist.sortOrder";
+
+function loadSavedSort(): SortOrder {
+  try {
+    const saved = localStorage.getItem(SORT_KEY);
+    if (saved === "oldest" || saved === "newest" || saved === "alpha") return saved;
+  } catch {
+    // localStorage can be unavailable (private mode); fall back to the default
+  }
+  return "oldest";
+}
+
+let currentSort: SortOrder = loadSavedSort();
 
 async function fetchTasks(): Promise<void> {
   const res = await fetch("/api/tasks");
@@ -129,6 +141,11 @@ addForm.addEventListener("submit", (e) => {
 
 sortSelect.addEventListener("change", () => {
   currentSort = sortSelect.value as SortOrder;
+  try {
+    localStorage.setItem(SORT_KEY, currentSort);
+  } catch {
+    // ignore storage errors
+  }
   render();
 });
 
@@ -143,4 +160,5 @@ filterBtns.forEach((btn) => {
   });
 });
 
+sortSelect.value = currentSort;
 fetchTasks();
