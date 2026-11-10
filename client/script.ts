@@ -104,7 +104,10 @@ function render(): void {
   }
 
   const activeCount = tasks.filter((t) => !t.completed).length;
-  itemCount.textContent = `${activeCount} item${activeCount === 1 ? "" : "s"} left`;
+  const completedCount = tasks.length - activeCount;
+  itemCount.textContent =
+    `${activeCount} item${activeCount === 1 ? "" : "s"} left` +
+    (completedCount > 0 ? ` · ${completedCount} completed` : "");
 }
 
 function renderTaskItem(task: Task): HTMLLIElement {
